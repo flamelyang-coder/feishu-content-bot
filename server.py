@@ -7,7 +7,14 @@ from feishu_api import get_tenant_access_token, APP_TOKEN, TABLE_ID
 from openai import OpenAI
 
 app = FastAPI()
-client = OpenAI()
+import os
+
+# 从环境变量获取配置，默认使用 DeepSeek
+api_key = os.getenv("OPENAI_API_KEY")
+base_url = os.getenv("OPENAI_API_BASE", "https://api.deepseek.com")
+model_name = os.getenv("MODEL_NAME", "deepseek-chat")
+
+client = OpenAI(api_key=api_key, base_url=base_url)
 
 def update_feishu_record(record_id, fields):
     """更新飞书记录"""
@@ -46,7 +53,7 @@ def generate_article_task(record_id, title, inspiration):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4.1-mini",
+            model=model_name,
             messages=[
                 {"role": "system", "content": "你是一个资深科技博主，擅长撰写硬核且易读的科技深度报道。"},
                 {"role": "user", "content": prompt}
