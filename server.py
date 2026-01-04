@@ -95,4 +95,6 @@ async def feishu_webhook(request: Request, background_tasks: BackgroundTasks):
     return {"status": "ok"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # 微信云托管默认使用 80 端口，或者通过 PORT 环境变量指定
+    port = int(os.getenv("PORT", 80))
+    uvicorn.run(app, host="0.0.0.0", port=port)
